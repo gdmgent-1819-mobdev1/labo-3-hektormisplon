@@ -1,0 +1,103 @@
+@import 'base';
+@import 'modules/list';
+
+* {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+
+    body {
+
+        background: rgba(0,0,0,0.03);
+        font-family: Roboto, Arial, Helvetica, sans-serif;
+    }
+}
+
+.container {
+
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+}
+
+.user {
+
+    margin: 3rem auto;
+
+    .user__card {
+
+        width: 100%;
+        background: #fff;
+        border-radius: .8em;
+        box-shadow: $shadow__gray;
+
+        .user__image {
+            position: static;
+            width: 100%;
+            height: $user-card__height;
+            object-fit: cover;
+            border-radius: .8em .8em 0 0;
+
+        }
+        .user__card__info {
+            margin: 1em 1em 1em 1em;
+        }
+    }
+}
+
+.evaluation-display {
+
+    position: absolute;
+    width: 100%;
+    margin-top: 6rem;
+
+    .evaluation-display__list {
+        width: 10rem;
+        height: $user-card__height - 3rem;
+        background: #fff;
+        box-shadow: $shadow__gray;
+        text-align: center;
+    }
+
+    .evaluation-display__list--likes {
+        float: right;
+    }
+}
+
+.evaluation {
+    margin: 1rem auto;
+    .evaluation__button {
+        float: left;
+        margin: 0.5rem;
+        width: 4rem;
+        height: 4rem;
+    
+        outline: none;
+        border: none;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: $shadow__gray;
+    
+        transition: 0.2s ease-in-out;
+    
+        &:hover {
+            transform: scale(1.08);
+        }
+    }
+}
+
+
+
+#map__user-map {
+    width: 100%;
+    height: $user-card__height
+}
+
+.map__user-map {
+    display: none;
+}
+
+
+.display__user-map {
+}
