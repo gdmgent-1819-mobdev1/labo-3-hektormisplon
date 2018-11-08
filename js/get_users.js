@@ -1,6 +1,5 @@
-//  ↓↓↓↓↓↓ Please check this users can't be displayed properly
+//  ↓↓↓↓↓↓ Please check this if users can't be displayed properly
 console.log('%c Notification: I noticed that the localstorage is better cleared for this website to display properly on localhost (no unique domain)', 'background: #559; color: #fff');
-
 
 window.onload = () => {
     if(localStorage.length === 0) {
@@ -18,15 +17,15 @@ function fetchUsers (numOfUsers) {
     .then(response => response.json())
     .then((data) => {
         let users = data.results;
+        console.log(users);
         users = users.map(user => {
-            //console.log(user);
             user = {
                 uuid:       user.login.uuid,
                 name:       user.name.first,
                 age:        user.dob.age,
                 gender:     user.gender,
                 location:   user.location.city,
-                coords:     '',
+                coords:     user.location.coordinates,
                 img:        user.picture.large,
                 liked:      null
             };
@@ -45,6 +44,7 @@ function displayUser(index) {
     document.querySelector('.user__age').textContent = user.age;
     document.querySelector('.user__gender').textContent = user.gender;
     document.querySelector('.user__location').textContent = user.location;
+    displayUserLocation(index);
 }
 
 //  store 'liked' value to user - if 10 users evaluated fetch 10 new users

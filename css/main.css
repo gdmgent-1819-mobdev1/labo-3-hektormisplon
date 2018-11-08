@@ -9,7 +9,9 @@ li {
 li:first-child {
   padding: 1rem;
   color: #fff;
-  background: #FD297B; }
+  background: linear-gradient(#fd267d, #FF7854);
+  box-shadow: 0 4px 9px 0 rgba(213, 218, 224, 0.5);
+  margin-bottom: 1em; }
 
 ::-webkit-scrollbar-track {
   position: absolute;
@@ -20,7 +22,8 @@ li:first-child {
   width: 0.62rem; }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #FD297B; }
+  background: #fd267d;
+  box-shadow: 0 4px 9px 0 rgba(213, 218, 224, 0.5); }
 
 * {
   margin: 0;
@@ -35,6 +38,9 @@ li:first-child {
   width: 100vw;
   display: flex;
   flex-direction: row; }
+
+.icon {
+  transform: translate(0px, 2px); }
 
 .user {
   margin: 3rem auto; }
@@ -51,14 +57,21 @@ li:first-child {
       border-radius: .8em .8em 0 0; }
     .user .user__card .user__card__info {
       margin: 1em 1em 1em 1em; }
+    .user .user__card .user__name {
+      text-transform: capitalize;
+      margin-bottom: 1em;
+      padding-bottom: 0.5em;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.03); }
+    .user .user__card .user__location {
+      text-transform: capitalize; }
 
 .evaluation-display {
   position: absolute;
-  width: 100%;
-  margin-top: 6rem; }
+  z-index: -1;
+  width: 100%; }
   .evaluation-display .evaluation-display__list {
-    width: 10rem;
-    height: 18rem;
+    width: 20vw;
+    height: 100vh;
     background: #fff;
     box-shadow: 0 4px 9px 0 rgba(213, 218, 224, 0.5);
     text-align: center; }
@@ -80,6 +93,16 @@ li:first-child {
     transition: 0.2s ease-in-out; }
     .evaluation .evaluation__button:hover {
       transform: scale(1.08); }
+    .evaluation .evaluation__button:active {
+      transition: 0.1s;
+      transform: scale(1.2);
+      opacity: 0.5; }
+  .evaluation .icon__evaluation__button--like {
+    color: #01df8a; }
+  .evaluation .icon__evaluation__button--dislike {
+    color: #fd267d; }
+  .evaluation .icon__evaluation__button--map {
+    color: rgba(0, 0, 0, 0.2); }
 
 #map__user-map {
   width: 100%;

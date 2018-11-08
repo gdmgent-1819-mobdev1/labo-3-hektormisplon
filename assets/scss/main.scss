@@ -5,10 +5,8 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
-
     body {
-
-        background: rgba(0,0,0,0.03);
+        background: $color__gray--light;
         font-family: Roboto, Arial, Helvetica, sans-serif;
     }
 }
@@ -19,6 +17,10 @@
     width: 100vw;
     display: flex;
     flex-direction: row;
+}
+
+.icon {
+    transform: translate(0px, 2px);
 }
 
 .user {
@@ -43,18 +45,27 @@
         .user__card__info {
             margin: 1em 1em 1em 1em;
         }
+        .user__name {
+            text-transform: capitalize;
+            margin-bottom: 1em;
+            padding-bottom: 0.5em;
+            border-bottom: 1px solid $color__gray--light;
+        }
+        .user__location {
+            text-transform: capitalize;
+        }
     }
 }
 
 .evaluation-display {
 
     position: absolute;
+    z-index: -1;
     width: 100%;
-    margin-top: 6rem;
 
     .evaluation-display__list {
-        width: 10rem;
-        height: $user-card__height - 3rem;
+        width: 20vw;
+        height: 100vh;
         background: #fff;
         box-shadow: $shadow__gray;
         text-align: center;
@@ -66,6 +77,8 @@
 }
 
 .evaluation {
+    .button__display__list--dislikes {
+    }
     margin: 1rem auto;
     .evaluation__button {
         float: left;
@@ -84,6 +97,20 @@
         &:hover {
             transform: scale(1.08);
         }
+        &:active {
+            transition: 0.1s;
+            transform: scale(1.2);
+            opacity: 0.5;
+        }
+    }
+    .icon__evaluation__button--like {
+        color: $color__green;
+    }
+    .icon__evaluation__button--dislike {
+        color: $color__pink;
+    }
+    .icon__evaluation__button--map {
+        color: $color__gray;
     }
 }
 

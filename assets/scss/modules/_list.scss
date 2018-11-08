@@ -10,7 +10,9 @@ li {
 li:first-child {
     padding: 1rem;
     color: #fff;
-    background: $color__pink;
+    background: $gradient__pink;
+    box-shadow: $shadow__gray;
+    margin-bottom: 1em;
 }
 
 ::-webkit-scrollbar-track {
@@ -24,5 +26,6 @@ li:first-child {
 }
  
 ::-webkit-scrollbar-thumb {
-    background-color: $color__pink;
+    background: $color__pink;
+    box-shadow: $shadow__gray;
 }

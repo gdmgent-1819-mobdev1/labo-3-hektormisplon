@@ -3,9 +3,9 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiaGVrdHIiLCJhIjoiY2pvM2NqYXU2MHQ3bjNwbnNuZGxwd
 
 let map = new mapboxgl.Map({
     container: 'map__user-map',
-    center: [-122.420679, 37.772537],
+    center: [-122.420679, 37.772537], //    pass in current user's coords
     zoom: 13,
-    style: 'mapbox://styles/mapbox/streets-v9',
+    style: 'mapbox://styles/mapbox/basic-v8',
     hash: true,
     transformRequest: (url, resourceType)=> {
         if(resourceType === 'Source' && url.startsWith('http://myHost')) {
@@ -18,6 +18,7 @@ let map = new mapboxgl.Map({
     }
 });
 
+//  add button to display/hide map instead of user image
 const displayUserMapBtn = document.querySelector('.display__user-map');
 displayUserMapBtn.addEventListener('click', () => {
     const userImageEl = document.querySelector('.user__image');
@@ -31,3 +32,13 @@ displayUserMapBtn.addEventListener('click', () => {
         userMapEl.style.display = 'none';
     }
 })
+
+function displayUserLocation(index) {
+    const currentUser = JSON.parse(localStorage.getItem(localStorage.key(index)));
+    console.log(currentUser.coords);
+    map.flyTo({
+        center: [currentUser.coords.longitude, currentUser.coords.latitude],
+        zoom: 9
+    })
+    localStorage.setItem(localStorage.key(index), JSON.stringify(currentUser));
+}
