@@ -1,18 +1,44 @@
 //  ↓↓↓↓↓↓ Please check this if users can't be displayed properly
-console.log('%c Notification: I noticed that the localstorage is better cleared for this website to display properly on localhost (no unique domain)', 'background: #559; color: #fff');
+console.log('%c Notification in blue', 'background: #559; color: #fff');
 
 window.onload = () => {
-    if(localStorage.length === 0) {
+    if(localStorage.length <= 1) {
+        localStorage.clear();
+        index = 1;
         fetchUsers(10);
     } else {
+        console.log('Displaying previously fetched users')
         displayUser(index); // store last index and replace here @@@@@@@@@@@@@@@@@
     }
+    const userDbRequest = window.indexedDB.open('tinderUser', 4);
+    userDbRequest.onupgradeneeded = ((e) => {
+        const result = e.target.result;
+        const userObjS = result.createObjectStore('user', { autoIncrement: true });
+    });
+    userDbRequest.onerror = ((e) => {
+        const error = e.target.error;
+        console.error(`IndexedDB: error loading database ${error}`);
+    });
+    userDbRequest.onsuccess = ((e) => {
+        const db = userDbRequest.result;
+        let tx = db.transaction('user', 'readwrite');
+        let store = tx.objectStore('user');
+        store.put({
+                firstname: 'Hektor',
+                lastname: 'Misplon',
+                age: 20
+        });
+        tx.oncomplete = (() => {
+            db.close();
+        });
+    });
 };
 
 let index = 0; //           @@@ THIS SHOULD NOT BE SET TO THE GLOBAL SCOPE
 
 //  fetch 10 users from 'randomuser.me' API & store necessary data in localStorage
 function fetchUsers (numOfUsers) {
+    console.log('Fetching 10 new users');
     fetch(`https://randomuser.me/api/?results=${numOfUsers}`)
     .then(response => response.json())
     .then((data) => {
@@ -31,7 +57,6 @@ function fetchUsers (numOfUsers) {
             };
             localStorage.setItem(user.uuid, JSON.stringify(user));
         });
-        displayUser(index);
     })
     .catch(error => console.error(`Could not fetch data | ${error}.`));
 }
@@ -44,7 +69,7 @@ function displayUser(index) {
     document.querySelector('.user__age').textContent = user.age;
     document.querySelector('.user__gender').textContent = user.gender;
     document.querySelector('.user__location').textContent = user.location;
-    displayUserLocation(index);
+    user.coords !== undefined ? displayUserLocation(index) : 'Could not display user location';
 }
 
 //  store 'liked' value to user - if 10 users evaluated fetch 10 new users
