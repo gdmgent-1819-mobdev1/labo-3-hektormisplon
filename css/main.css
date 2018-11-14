@@ -65,19 +65,6 @@ li:first-child {
     .user .user__card .user__location {
       text-transform: capitalize; }
 
-.evaluation-display {
-  position: absolute;
-  z-index: -1;
-  width: 100%; }
-  .evaluation-display .evaluation-display__list {
-    width: 20vw;
-    height: 100vh;
-    background: #fff;
-    box-shadow: 0 4px 9px 0 rgba(213, 218, 224, 0.5);
-    text-align: center; }
-  .evaluation-display .evaluation-display__list--likes {
-    float: right; }
-
 .evaluation {
   margin: 1rem auto; }
   .evaluation .evaluation__button {
@@ -103,6 +90,8 @@ li:first-child {
     color: #fd267d; }
   .evaluation .icon__evaluation__button--map {
     color: rgba(0, 0, 0, 0.2); }
+  .evaluation .icon__evaluation__button--return {
+    color: rgba(0, 0, 0, 0.2); }
 
 #map__user-map {
   width: 100%;
@@ -110,5 +99,58 @@ li:first-child {
 
 .map__user-map {
   display: none; }
+
+.evaluation-display__button {
+  margin: 0.5rem;
+  width: 4rem;
+  height: 4rem;
+  outline: none;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 4px 9px 0 rgba(213, 218, 224, 0.5);
+  transition: 0.2s ease-in-out; }
+  .evaluation-display__button:hover {
+    transform: scale(1.08); }
+  .evaluation-display__button:active {
+    transition: 0.1s;
+    transform: scale(1.2);
+    opacity: 0.5; }
+
+.evaluation-display__button__like {
+  float: right;
+  color: #01df8a; }
+
+.evaluation-display__button__dislike {
+  color: #fd267d; }
+
+.evaluation-display {
+  position: absolute;
+  width: 100%; }
+  .evaluation-display .evaluation-display__list {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3em;
+    height: 21rem; }
+  .evaluation-display .evaluation-display__list--dislikes {
+    transform: translateX(-15em);
+    width: 20vw;
+    background: #fff;
+    box-shadow: 0 4px 9px 0 rgba(213, 218, 224, 0.5);
+    text-align: center;
+    border-radius: 0 1em 1em 0; }
+    .evaluation-display .evaluation-display__list--dislikes.is-open {
+      transition: .5s;
+      transform: none; }
+  .evaluation-display .evaluation-display__list--likes {
+    transform: translateX(15em);
+    width: 20vw;
+    background: #fff;
+    box-shadow: 0 4px 9px 0 rgba(213, 218, 224, 0.5);
+    text-align: center;
+    border-radius: 1em 0 0 1em; }
+    .evaluation-display .evaluation-display__list--likes.is-open {
+      transition: .5s;
+      transform: none; }
 
 /*# sourceMappingURL=main.css.map */

@@ -1,49 +1,20 @@
-//  ↓↓↓↓↓↓ Please check this if users can't be displayed properly
-console.log('%c Notification in blue', 'background: #559; color: #fff');
+console.log('%c Tinder', 'background: #559; color: #fff');
 
 window.onload = () => {
-    if(localStorage.length <= 1) {
-        localStorage.clear();
-        index = 1;
-        fetchUsers(10);
-    } else {
-        console.log('Displaying previously fetched users')
-        displayUser(index); // store last index and replace here @@@@@@@@@@@@@@@@@
-    }
-    const userDbRequest = window.indexedDB.open('tinderUser', 4);
-    userDbRequest.onupgradeneeded = ((e) => {
-        const result = e.target.result;
-        const userObjS = result.createObjectStore('user', { autoIncrement: true });
-    });
-    userDbRequest.onerror = ((e) => {
-        const error = e.target.error;
-        console.error(`IndexedDB: error loading database ${error}`);
-    });
-    userDbRequest.onsuccess = ((e) => {
-        const db = userDbRequest.result;
-        let tx = db.transaction('user', 'readwrite');
-        let store = tx.objectStore('user');
-        store.put({
-                firstname: 'Hektor',
-                lastname: 'Misplon',
-                age: 20
-        });
-        tx.oncomplete = (() => {
-            db.close();
-        });
-    });
-};
+    displayEvaluation();
+    fetchUsers(10)
+        .then(fetchedUsers => {
+            createUserStore(fetchedUsers);
+        })
+}
 
-let index = 0; //           @@@ THIS SHOULD NOT BE SET TO THE GLOBAL SCOPE
-
-//  fetch 10 users from 'randomuser.me' API & store necessary data in localStorage
-function fetchUsers (numOfUsers) {
-    console.log('Fetching 10 new users');
-    fetch(`https://randomuser.me/api/?results=${numOfUsers}`)
+//  fetch and filter data for 10 users from API, return an array of objects
+function fetchUsers(numOfUsers) {
+    return fetch(`https://randomuser.me/api/?results=${numOfUsers}`)
     .then(response => response.json())
     .then((data) => {
+        let fetchedUsers = [];
         let users = data.results;
-        console.log(users);
         users = users.map(user => {
             user = {
                 uuid:       user.login.uuid,
@@ -55,55 +26,125 @@ function fetchUsers (numOfUsers) {
                 img:        user.picture.large,
                 liked:      null
             };
-            localStorage.setItem(user.uuid, JSON.stringify(user));
-        });
+            fetchedUsers.push(user);
+        })
+        return fetchedUsers;
     })
     .catch(error => console.error(`Could not fetch data | ${error}.`));
 }
 
-//  display the user object to the DOM
+function createUserStore(users) {
+    const userDbRequest = window.indexedDB.open('tinderUser', 1);
+    userDbRequest.onerror = ((e) => {
+        const error = e.target.error;
+        console.error(`IndexedDB: error loading database | ${error}`);
+    });
+    userDbRequest.onsuccess = ((e) => {
+        db = userDbRequest.result;
+        displayUser(1);
+    });
+    userDbRequest.onupgradeneeded = ((e) => {
+        let db = userDbRequest.result;
+
+        db.onerror = ((e) => {
+            console.log('IndexedDB: upgrade db');
+        });
+
+        let store = db.createObjectStore('user', {autoIncrement: true});
+        users.forEach(user => {
+            store.add(
+                user
+            );
+        });
+    });
+};
+
 function displayUser(index) {
-    const user = JSON.parse(localStorage.getItem(localStorage.key(index)));
-    document.querySelector('.user__image').setAttribute('src', user.img);
-    document.querySelector('.user__name').textContent = user.name;
-    document.querySelector('.user__age').textContent = user.age;
-    document.querySelector('.user__gender').textContent = user.gender;
-    document.querySelector('.user__location').textContent = user.location;
-    user.coords !== undefined ? displayUserLocation(index) : 'Could not display user location';
-}
+    let tx = db.transaction('user', 'readwrite');
+    let store = tx.objectStore('user');
 
-//  store 'liked' value to user - if 10 users evaluated fetch 10 new users
-function evaluateUser(evaluation) {
-    //liked ? console.log('liked') : console.log('disliked');
-    const currentUser = JSON.parse(localStorage.getItem(localStorage.key(index)));
-    evaluation ? currentUser.liked = true : currentUser.liked = false;
-    localStorage.setItem(localStorage.key(index), JSON.stringify(currentUser));
-
-    if(index < localStorage.length -1 ) {
-        index += 1;
-        displayUser(index);
-    } else {
-        fetchUsers(10);
+    requestStoreLength = store.count();
+    requestStoreLength.onsuccess =  (e) => {
+        let indexLength = e.target.result;
+        if(index >= indexLength + 1) {
+            console.log('Fetching some new users...');
+            fetchUsers(10)
+            .then(fetchedUsers => {
+                addUsers(fetchedUsers);
+            })
+        }
+    };
+    //let range = IDBKeyRange.bound(1,3);
+    let request = store.get(index);
+    request.onsuccess = (e) => {
+        let user = e.target.result;
+        displayUserLocation(user);
+        document.querySelector('.user__image').setAttribute('src', user.img);
+        document.querySelector('.user__name').textContent = user.name;
+        document.querySelector('.user__age').textContent = user.age;
+        document.querySelector('.user__gender').textContent = user.gender;
+        document.querySelector('.user__location').textContent = user.location;
+        document.querySelector('.evaluation__button--like').onclick = (e) => {
+            setLiked(index, true);
+            displayUser(index + 1);
+            const likeListEl = document.querySelector('.evaluation-display__list--likes');
+            const likedUserEl = document.createElement('li');
+            likedUserEl.setAttribute('class', 'liked-users');
+            likedUserEl.textContent = user.name;
+            likeListEl.append(likedUserEl);
+            console.log(likedUserEl);
+        }
+        document.querySelector('.evaluation__button--dislike').onclick = (e) => {
+            setLiked(index, false);
+            displayUser(index + 1);
+            const dislikedListEl = document.querySelector('.evaluation-display__list--dislikes');
+            const dislikedUserEl = document.createElement('li');
+            dislikedUserEl.setAttribute('class', 'disliked-users');
+            dislikedUserEl.textContent = user.name;
+            dislikedListEl.append(dislikedUserEl);
+            console.log(dislikedUserEl);
+        }
+        document.querySelector('.evaluation__button__return').onclick = (e) => {
+            displayUser(index -1);
+        }
     }
-    displayLikes(currentUser);
-    console.log(localStorage);
 }
 
-//  event listeners for the like and dislike buttons
-document.querySelector('.evaluation__button--like').addEventListener('click', () => evaluateUser(true));
-document.querySelector('.evaluation__button--dislike').addEventListener('click', () => evaluateUser(false));
+function addUsers(users) {
+    let tx = db.transaction('user', 'readwrite');
+    let store = tx.objectStore('user');
+    users.forEach(user => {
+        store.add(
+            user
+        );
+    });
+}
 
-//function to display who you liked and who you disliked
-function displayLikes(user) {
-    if(user.liked) {
-        const likedUserEl = document.createElement('li');
-        document.querySelector('.evaluation-display__list--likes').appendChild(likedUserEl);
-        likedUserEl.textContent = `${user.name}`;
-    } else if(user.liked === false) {
-        const dislikedUserEl = document.createElement('li');
-        document.querySelector('.evaluation-display__list--dislikes').appendChild(dislikedUserEl);
-        dislikedUserEl.textContent = `${user.name}`;
-    } else {
-        console.error('Error displaying user evaluation.');
+function setLiked(index, liked) {
+    let store = db.transaction(['user'], 'readwrite').objectStore('user');
+    const likedRequest = store.get(index);
+    likedRequest.onsuccess = (e) => {
+        let user = likedRequest.result;
+        user.liked = liked;
+        store.put(user, index);
+        liked ? console.log(`You liked ${user.name}`) : console.log(`You disliked ${user.name}`);
+    }
+    likedRequest.onerror = (e) => {
+        console.log(e);
     }
 }
+function displayEvaluation() {
+    const displayLikeEl = document.querySelector('.evaluation-display__button__like');
+    const displayDislikeEl = document.querySelector('.evaluation-display__button__dislike');
+    const likedListEl = document.querySelector('.evaluation-display__list--likes');
+    const dislikedListEl = document.querySelector('.evaluation-display__list--dislikes');
+
+    displayLikeEl.addEventListener('click', (e) => {
+        console.log('display likes');
+        likedListEl.classList.toggle('is-open');
+    });
+    displayDislikeEl.addEventListener('click', (e) => {
+        console.log('display dislikes');
+        dislikedListEl.classList.toggle('is-open');
+    });
+};

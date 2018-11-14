@@ -1,6 +1,20 @@
 //  Init Mapbox
 mapboxgl.accessToken = 'pk.eyJ1IjoiaGVrdHIiLCJhIjoiY2pvM2NqYXU2MHQ3bjNwbnNuZGxwdmU1NiJ9.NPQJL5jUnYbId3pn5OqKdg';
 
+function getClientLocation(){
+    if("geolocation" in navigator){
+        navigator.geolocation.getCurrentPosition(function(position) {
+            myLat = position.coords.latitude;
+            myLon = position.coords.longitude;
+            console.log('My Location: ' ,{myLat, myLon});
+        });
+    }
+    else{
+        console.log('No geolocation available');
+    }
+}
+getClientLocation();
+
 let map = new mapboxgl.Map({
     container: 'map__user-map',
     center: [-122.420679, 37.772537], //    pass in current user's coords
@@ -24,6 +38,7 @@ displayUserMapBtn.addEventListener('click', () => {
     const userImageEl = document.querySelector('.user__image');
     const userMapEl = document.querySelector('.map__user-map');
 
+
     if(userImageEl.style.display !== 'none') {
         userImageEl.style.display = 'none';
         userMapEl.style.display = 'block';
@@ -33,12 +48,9 @@ displayUserMapBtn.addEventListener('click', () => {
     }
 })
 
-function displayUserLocation(index) {
-    const currentUser = JSON.parse(localStorage.getItem(localStorage.key(index)));
-    console.log(currentUser.coords);
+function displayUserLocation(user) {
     map.flyTo({
-        center: [currentUser.coords.longitude, currentUser.coords.latitude],
+        center: [user.coords.longitude, user.coords.latitude],
         zoom: 9
-    })
-    localStorage.setItem(localStorage.key(index), JSON.stringify(currentUser));
+    });
 }

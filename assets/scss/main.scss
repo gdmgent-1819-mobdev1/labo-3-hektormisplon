@@ -12,7 +12,6 @@
 }
 
 .container {
-
     height: 100vh;
     width: 100vw;
     display: flex;
@@ -57,28 +56,7 @@
     }
 }
 
-.evaluation-display {
-
-    position: absolute;
-    z-index: -1;
-    width: 100%;
-
-    .evaluation-display__list {
-        width: 20vw;
-        height: 100vh;
-        background: #fff;
-        box-shadow: $shadow__gray;
-        text-align: center;
-    }
-
-    .evaluation-display__list--likes {
-        float: right;
-    }
-}
-
 .evaluation {
-    .button__display__list--dislikes {
-    }
     margin: 1rem auto;
     .evaluation__button {
         float: left;
@@ -112,6 +90,9 @@
     .icon__evaluation__button--map {
         color: $color__gray;
     }
+    .icon__evaluation__button--return {
+        color: $color__gray;
+    }
 }
 
 
@@ -127,4 +108,73 @@
 
 
 .display__user-map {
+}
+
+.evaluation-display__button {
+    margin: 0.5rem;
+    width: 4rem;
+    height: 4rem;
+    outline: none;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: $shadow__gray;
+
+    transition: 0.2s ease-in-out;
+    
+    &:hover {
+        transform: scale(1.08);
+    }
+    &:active {
+        transition: 0.1s;
+        transform: scale(1.2);
+        opacity: 0.5;
+    }
+}
+
+.evaluation-display__button__like {
+    float: right;
+    color: $color__green;
+}
+
+.evaluation-display__button__dislike {
+    color: $color__pink;
+}
+
+.evaluation-display {
+
+    position: absolute;
+    width: 100%;
+    .evaluation-display__list {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 3em;
+        height: $user-card__height;
+    }
+
+    .evaluation-display__list--dislikes {
+        transform: translateX(-15em);
+        width: 20vw;
+        background: #fff;
+        box-shadow: $shadow__gray;
+        text-align: center;
+        border-radius: 0 1em 1em 0;
+        &.is-open {
+            transition: .5s;
+            transform: none;
+        }
+    }
+
+    .evaluation-display__list--likes {
+        transform: translateX(15em);
+        width: 20vw;
+        background: #fff;
+        box-shadow: $shadow__gray;
+        text-align: center;
+        border-radius: 1em 0 0 1em;
+        &.is-open {
+            transition: .5s;
+            transform: none;
+        }
+    }
 }
